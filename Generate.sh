@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir -p Selection
 rm -rf Selection/*
 for i in {1..5}
 do
@@ -10,14 +11,11 @@ do
 	java -jar jd-cli.jar -sr Selection/$filename/$filename.jar
 	mv $filename.src.jar Selection/$filename/$filename.src.jar
 	cd Selection/$filename/
-	jar xf $filename.src.jar
-	grep -rnw "." -e "onLowMemory" > results_oLM
-	grep -rnw "." -e "onTrimMemory" > results_oTM
+	jar xf $filename.src.jar	
 	cd ../..
-	cat Selection/$filename/results_oLM >> results_oLM
-	cat Selection/$filename/results_oTM >> results_oTM
+	grep -rnw "Selection/$filename/" -e "onLowMemory" >> results_oLM
+	grep -rnw "Selection/$filename/" -e "onTrimMemory" >> results_oTM
 done
-
 #mkdir Selection/zjimu.main
 #./dex2jar-2.0/d2j-dex2jar.sh -f list_apk/zjimu.main.apk -o Selection/zjimu.main/zjimu.main-dex2jar.jar
 #java -jar jd-cli.jar Selection/zjimu.main/zjimu.main-dex2jar.jar
