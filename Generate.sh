@@ -16,24 +16,25 @@ do
 	cd Selection/$filename/
 	jar xf $filename.src.jar	
 	cd ../..
-	mkdir results_olm/$filename/
-	touch results_olm/$filename/result.txt
-	mkdir results_otm/$filename/
-	touch results_otm/$filename/result.txt
 	#grep -rnw "Selection/$filename/" -e "onLowMemory" >> results_oLM
 	#grep -rnw "Selection/$filename/" -e "onTrimMemory" >> results_oTM
 	grep "public[[:space:]]*void[[:space:]]*onTrimMemory\(.*\)" -rnw "Selection/$filename/" | grep -v gms | while read -r line ; do
+		mkdir -p results_otm/$filename/
+		touch results_otm/$filename/result.txt
 		javaPath=$(echo $(pwd)/$line | grep -oP ".*\.java")
 		javaFile=$(echo $javaPath | grep -oP "[^\/]*.java")
 		javaClass=${javaFile%".java"}
-		java -jar dependencies/codesmellsstats.jar $javaPath $javaClass onTrimMemory >> results_olm/$filename/result.txt
+echo "[$javaPath]" >> results_otm/$filename/result.txt
+		java -jar dependencies/codesmellsstats.jar $javaPath $javaClass onTrimMemory >> results_otm/$filename/result.txt
 	done
 	grep "public[[:space:]]*void[[:space:]]*onLowMemory\(.*\)" -rnw "Selection/$filename/" | grep -v gms | while read -r line ; do
-		
+		mkdir -p results_olm/$filename/
+		touch results_olm/$filename/result.txt
 		javaPath=$(echo $(pwd)/$line | grep -oP ".*\.java")
 		javaFile=$(echo $javaPath | grep -oP "[^\/]*.java")
 		javaClass=${javaFile%".java"}
-		java -jar dependencies/codesmellsstats.jar $javaPath $javaClass onLowMemory >> results_otm/$filename/result.txt
+		echo "[$javaPath]" >> results_olm/$filename/result.txt
+		java -jar dependencies/codesmellsstats.jar $javaPath $javaClass onLowMemory >> results_olm/$filename/result.txt
 	done
 done
 #mkdir Selection/zjimu.main
